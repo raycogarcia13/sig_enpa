@@ -1,18 +1,28 @@
-import { lazy, Suspense } from "react";
+import { 
+  lazy, 
+  Suspense, 
+} from "react";
 import { Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "./store";
+import { AuthProvider, ProtectedRoute, NoAuthRoute } from "./auth"
+import "antd/dist/antd.css";
 
 const Login = lazy(()=>import('./template/Login'))
 const Home = lazy(()=>import('./template/Base'))
 
 
-function App() {
+const App = () => {
+ 
   return (
-    <>
-      <Routes>
-          <Route path="/login" element={ <Suspense fallback={<>...</>}><Login /></Suspense>} />
-          <Route path="/" element={ <Suspense fallback={<>...</>}><Home /></Suspense>} />
-      </Routes>
-    </>
+    <Provider store={store}>
+      <AuthProvider>
+          <Routes>
+              <Route path="/login" element={ <NoAuthRoute><Suspense fallback={<>...</>}><Login login={null} /></Suspense></NoAuthRoute>} />
+              <Route path="*" element={ <ProtectedRoute><Suspense fallback={<>...</>}><Home /></Suspense></ProtectedRoute>} />
+          </Routes> 
+      </AuthProvider>
+    </Provider>
   );
 }
 

@@ -1,4 +1,4 @@
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import 'antd/dist/antd.css';
 
 let mdTheme = createTheme({
     palette: {

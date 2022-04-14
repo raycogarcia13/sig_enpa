@@ -1,138 +1,113 @@
-import {useEffect, useState} from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import Alert from '@mui/material/Alert';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import { CircularProgress } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { Snackbar } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
+import {useEffect} from 'react';
+import { 
+  Alert,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Input,
+  Layout,
+  Row,
+  Typography,
+  Button
+} from 'antd';
 
-import { useNavigate } from 'react-router-dom';
-
-import Copyright from '../components/Copyright'
-import { api_security } from '../config/axios'
-import theme from '../config/theme';
+import {
+  LockOutlined
+} from '@ant-design/icons'
 
 
-export default function Login() {
-  
-  const [error,setError] = useState('');
-  const [load,setLoad] = useState(false);
-  const [login,setLogin] = useState(false);
-  const navigate = useNavigate();
+import { useDispatch, useSelector } from 'react-redux';
+import { loginAction } from '../store/auth/authActions'
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setError('');
-    setLoad(true);
-    const data = new FormData(event.currentTarget);
-    const dataFrm = {
-      username: data.get('email'),
-      password: data.get('password'),
-    };
-    api_security.post('/login',dataFrm).then(res=>{
-      console.log(res)
-      setLogin(true)
-      navigate('/',{replace:true});
-    }).catch(err=>{
-      console.log(err.response.data.error)
-      setError(err.response.data.error);
-      setLoad(false)
-    })
+import { useAuth} from '../auth'
+import { Content } from 'antd/lib/layout/layout';
+
+const { Text } = Typography;
+
+const Login = (props) => {
+  const data = useAuth();
+  const dispatch = useDispatch();
+  const { loading, user,token,error, logged } = useSelector(state=>state.auth)
+
+  useEffect( ()=>{
+    if(logged){
+        data.onLogin({user,token});
+    }
+  })
+
+  const onFinish = async (values) => {
+    dispatch(await loginAction(values));
   };
 
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
 
   const message = ()=>{
     if(error)
       return (
-        <Alert severity="error"  >{error}</Alert>
+        <Alert message={error} type="error" showIcon />
       )
-
       return  (<></>)
   }
 
-  const loading = (text)=>{
-    if(load)
-      return (
-        <CircularProgress color="success"/>
-      )
-
-      return  (<>{text}</>)
-  }
-
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            SIG ENPA
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            
-           {message()}
+    <>
+      <Layout>
+        <Content style={{height:'100vh'}}>
+          <Row style={{height:'100%'}} type="flex" justify="space-around" align='middle'>
+            <Col md={8} sm={12} xs={20}>
+              <Card bordered={true}>
+                <Row type="flex" justify='center' align="middle"  gutter={8}>
+                  <Col>
+                      <LockOutlined style={{color:'green', fontSize:24}} />
+                  </Col>
+                  <Col>
+                    <Text type="success"> SIG ENPA </Text>
+                  </Col>
+                </Row>
+                <Divider></Divider>
+                <Form
+                    name="basic"
+                    layout="vertical"
+                    initialValues={{ remember: true }}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="off"
+                  >
+                    <Form.Item
+                      label="Usuario"
+                      name="username"
+                      rules={[{ required: true, message: 'Debe insertar su usuario!' }]}
+                    >
+                      <Input />
+                    </Form.Item>
 
-            <Button
-              type="submit"
-              fullWidth
-              disabled = {load}
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              {loading('Entrar')}
-            </Button>
-           
-          </Box>
-        </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-        <Snackbar 
-          open={login} 
-          autoHideDuration={3000} 
-          onClose={()=>{
-            setLogin(false);
-          }}
-          anchorOrigin={{vertical: 'top',
-          horizontal: 'center'}}>
-          <Alert severity="success" sx={{ width: '100%' }}>
-            Login correcto, bienvenidos al SIG ENPA
-          </Alert>
-        </Snackbar>
-      </Container>
-    </ThemeProvider>
+                    <Form.Item
+                      label="Contraseña"
+                      name="password"
+                      rules={[{ required: true, message: 'Debe insertar una contraseña válida!' }]}
+                    >
+                      <Input.Password />
+                    </Form.Item>
+
+                    {message()}
+                    <Divider />
+
+                    <Form.Item wrapperCol={{ offset: 12 }}>
+                      <Button type="primary" loading={loading} block style={{ background: "#007a3d", borderColor:"#007a3d" }} htmlType="submit">
+                        Entrar
+                      </Button>
+                    </Form.Item>
+                  </Form>
+              </Card>
+            </Col>
+          </Row>
+        </Content>
+      </Layout>
+    </>
   );
 }
+
+export default Login;

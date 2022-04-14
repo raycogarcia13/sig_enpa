@@ -50,6 +50,24 @@ exports.login =  catchAsyncErrors(async (req,res,next) =>{
     });
 })
 
+exports.login2 =  catchAsyncErrors(async (req,res,next) =>{
+    const {username, password} = req.body;
+    
+    if(!username || !password)
+        return next(new ErrorHandler('auth.error',400))
+    
+    const roles = ['CTJefe'];
+
+    const user = {
+        user:username,
+        email:'desarrollo@enpa.iju.minag.cu',
+        name:'Rayco García Fernández',
+        roles,
+    }
+    return sendToken(user, res);
+})
+
+
 // logout user => /api/v1/logout
 exports.logout =  catchAsyncErrors(async (req,res,next) =>{
     res.cookie('token',null,{

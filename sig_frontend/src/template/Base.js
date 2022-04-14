@@ -1,172 +1,79 @@
 import * as React from 'react';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiDrawer from '@mui/material/Drawer';
-import Box from '@mui/material/Box';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-
-import Typography from '@mui/material/Typography';
-
-import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import LoginIcon from '@mui/icons-material/Person';
 
 import Router from '../router'
 import Menu from '../components/Menu'
 import Copyright from '../components/Copyright'
-import { Link } from "react-router-dom";
-import mdTheme from '../config/theme'
 
-const drawerWidth = 240;
+import { useAuth } from '../auth';
+import '../App.css'
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutAction } from '../store/auth/authActions'
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    '& .MuiDrawer-paper': {
-      position: 'relative',
-      whiteSpace: 'nowrap',
-      width: drawerWidth,
-      transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      boxSizing: 'border-box',
-      ...(!open && {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-          width: theme.spacing(9),
-        },
-      }),
-    },
-  }),
-);
+import { Button, Layout, Tooltip } from 'antd';
+import {
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+  LogoutOutlined,
+} from '@ant-design/icons';
+const { Header, Sider, Content } = Layout;
 
-function DashboardContent() {
-  const [open, setOpen] = React.useState(true);
-  const toggleDrawer = () => {
-    setOpen(!open);
+function DashboardContent({ token, logout}) {
+  const [collapsed, setCollapsed] = React.useState(false);
+  
+  const toggle = () => {
+    setCollapsed(!collapsed)
   };
 
+  const dispatch = useDispatch();
+  // const myuser = user.user
+
+  const { user } = useSelector(state=>state.auth)
+
+  const onLogout = async () =>{
+    await dispatch(logoutAction());
+    logout();
+  }
+
   return (
-    <ThemeProvider theme={mdTheme}>
-      <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
-        <AppBar position="absolute" open={open}>
-          <Toolbar
-            sx={{
-              pr: '24px', // keep right padding when drawer closed
-            }}
-          >
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="white"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-              SIG ENPA
-            </Typography>
-            
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-
-            <IconButton color="inherit">
-              <Link to="/login">
-                 <LoginIcon color='white'/>
-              </Link>
-            </IconButton>
-          
-          </Toolbar>
-        </AppBar>
-        <Drawer variant="permanent" open={open}>
-          <Toolbar
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              px: [1],
-            }}
-          >
-            Menú
-            <IconButton onClick={toggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </Toolbar>
-
-          
+    <Layout style={{height:'100vh'}}>
+        <Sider theme='light' trigger={null} collapsible collapsed={collapsed}>
+          <div className="logo">
+             <img width={'90%'} src={require('../assets/image/enpa.png')}/>
+          </div>
           <Menu />
-        </Drawer>
-        
-        <Box
-          component="main"
-          sx={{
-            backgroundColor: (theme) =>
-              theme.palette.mode === 'light'
-                ? theme.palette.grey[100]
-                : theme.palette.grey[900],
-            flexGrow: 1,
-            height: '100vh',
-            overflow: 'auto',
-          }}
-        >
-          <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              <Router />
-            </Grid>
-            <Copyright sx={{ pt: 4 }} />
-          </Container>
-        </Box>
-      </Box>
-    </ThemeProvider>
+        </Sider>
+        <Layout className="site-layout">
+          <Header className="site-layout-background" style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+            {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+              className: 'trigger',
+              onClick: toggle,
+            })}
+            
+            <div>
+              {(user) ?user.name:'Loading...'} &nbsp;
+              <Tooltip title="Salir">
+                <Button onClick={()=>{onLogout()}} shape='circle' icon={<LogoutOutlined />}></Button>
+              </Tooltip>
+            </div>
+          </Header>
+          <Content
+            className="site-layout-background"
+            style={{
+              margin: '24px 16px',
+              padding: 24,
+              minHeight: 280,
+            }}
+          >
+             <Router />
+          </Content>
+          <Copyright />
+        </Layout>
+      </Layout>
   );
 }
 
 export default function Dashboard() {
-  return <DashboardContent />;
+  const data = useAuth();
+  return <DashboardContent user={data.user} token={data.token} logout={data.onLogout} />;
 }

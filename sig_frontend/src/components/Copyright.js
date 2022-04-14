@@ -1,15 +1,15 @@
-import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
+import { Footer } from 'antd/lib/layout/layout';
+import { Link } from 'react-router-dom';
 
 export default (props)=>{
     return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
+      <Footer style={{ textAlign: 'center' }}>
         {'Copyright © '}
-        <Link color="inherit" href="https://portla.enpa.iju.minag.cu/">
-          SIG ENPA
-        </Link>{' '}
+        <a color="inherit" href="https://portal.enpa.iju.minag.cu/">
+          ENPA
+        </a>{' '}
         {new Date().getFullYear()}
         {'.'}
-      </Typography>
+        </Footer>
     );
 }

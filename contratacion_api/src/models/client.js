@@ -43,7 +43,7 @@ const dataSchema = new Schema({
         required: [true, 'La resolución de nombramiento es obligatoria']
     },
     resolucion_fecha:{
-        type: Number,
+        type: Date,
         required: [true, 'La fecha de la resoución de nombramiento es obligatoria']
     }
     

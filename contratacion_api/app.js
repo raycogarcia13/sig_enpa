@@ -14,7 +14,8 @@ app.use(cookieParser())
 
 // // routes import
 // User and auth
-
+app.use('/api/v1',require("./src/routes/services"));
+app.use('/api/v1',require("./src/routes/client"));
 
 // error middleware
 const errorMiddleware = require('./src/middlewares/errors')
