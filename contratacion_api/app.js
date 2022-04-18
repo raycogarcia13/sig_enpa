@@ -13,9 +13,10 @@ app.use(bodyParser.json({limit:'50mb'}));
 app.use(cookieParser())
 
 // // routes import
-// User and auth
+// contratacion
 app.use('/api/v1',require("./src/routes/services"));
 app.use('/api/v1',require("./src/routes/client"));
+app.use('/api/v1',require("./src/routes/solicitud"));
 
 // error middleware
 const errorMiddleware = require('./src/middlewares/errors')

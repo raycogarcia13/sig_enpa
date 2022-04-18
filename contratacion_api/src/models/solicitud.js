@@ -1,11 +1,13 @@
 const { Schema, model, Types } = require("mongoose");
 const validator = require("validator")
+const Service = require('./service');
+const Client = require('./client');
 
 const dataSchema = new Schema({
-    client: { type: Types.ObjectId, required: true, refPath: 'Client' },
-    service: { type: Types.ObjectId, required: true, refPath: 'Service' },
+    client: { type: Types.ObjectId, required: true, ref: Client },
+    service: { type: Types.ObjectId, required: true, ref: Service },
     fecha_sol:{
-        type: Number,
+        type: Date,
         required:[true,"La fecha es obligatoria"]
     },
     description:{
