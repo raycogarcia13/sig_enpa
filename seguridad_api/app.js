@@ -4,7 +4,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser');
 const path = require("path")
 
-app.set('port',process.env.PORT || 3000)
+app.set('port',process.env.PORT || 4000)
 //middlewares
 const cookieParser = require('cookie-parser');
 const corsOption = require('./src/config/cors');
