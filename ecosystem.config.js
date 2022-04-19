@@ -3,22 +3,21 @@ module.exports = {
       name: "sig_contratacion",
       script: "./contratacion_api/index.js",
       env: {
-        NODE_ENV:'production',
+        NODE_ENV:'PRODUCTION',
         PORT:'4001'
       },
     }, {
         name: "sig_seguridad",
         script: "./seguridad_api/index.js",
         env: {
-          NODE_ENV:'production',
+          NODE_ENV:'PRODUCTION',
           PORT:'4000'
         }
     },{
-        name: "sig_frontend",
-        script: "cd sig_frontend && yarn",
-        args:"start",
+        name: "frontend",
+        script: "./app/index.js",
         env: {
-          NODE_ENV: "development",
+          NODE_ENV: "PRODUCTION",
           PORT:'4050'
         }
       }
