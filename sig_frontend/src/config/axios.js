@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const sec_uri = process.env.NODE_ENV == 'DEVELOPMENT' ? 'http://localhost:4000/api/v1' : 'http://secured_sig.enpa.iju.minag.cu/api/v1'
-const cont_uri = process.env.NODE_ENV == 'DEVELOPMENT' ? 'http://localhost:4001/api/v1' : 'http://contratos_sig.enpa.iju.minag.cu/api/v1'
+const sec_uri = process.env.NODE_ENV == 'DEVELOPMENT' ? 'http://localhost:4000/api/v1' : 'http://securedsig.enpa.iju.minag.cu/api/v1'
+const cont_uri = process.env.NODE_ENV == 'DEVELOPMENT' ? 'http://localhost:4001/api/v1' : 'http://contratossig.enpa.iju.minag.cu/api/v1'
 
 // console.log(process.env)
 
