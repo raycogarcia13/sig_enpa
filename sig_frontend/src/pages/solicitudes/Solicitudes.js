@@ -42,7 +42,8 @@ export default function DataTable() {
         )
       } 
     },
-    { dataIndex: 'service', key: 'service', title: 'Servicio',
+    { dataIndex: 'name', key: 'name', title: 'Servicio'},
+    { dataIndex: 'service', key: 'service', title: 'Tipo',
         render: (item)=>{
           return (
             <Space>

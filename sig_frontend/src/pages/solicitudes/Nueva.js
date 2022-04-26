@@ -94,7 +94,14 @@ export default function Formulario() {
               onFinishFailed={onFinishFailed}
               autoComplete="on"
             >
-             
+              <Form.Item
+                  label="Servicio"
+                  name="name"
+                  rules={[{ required: true, message: 'Debe insertar el servicio!' }]}
+                >
+                  <Input />
+              </Form.Item>
+
               <Form.Item
                 label="Cliente"
                 name="client"
@@ -109,7 +116,7 @@ export default function Formulario() {
               </Form.Item>
 
               <Form.Item
-                label="Servicio"
+                label="Tipo de Servicio"
                 name="service"
                 rules={[{ required: true, message: 'Debe escoger el servicio!' }]}
               >

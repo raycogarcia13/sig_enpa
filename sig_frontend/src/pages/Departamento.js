@@ -12,7 +12,6 @@ import {
   Form,
   Input,
   Tooltip,
-  Select
 } from 'antd';
 
 import { 
@@ -23,15 +22,12 @@ import {
 
 import {api_contratacion} from '../config/axios'
 
-const { Option } = Select;
-
 
 export default function DataTable() {
   const [open, setOpen] = React.useState(false);
   const [data,setData] = React.useState([])
   const [nuevo,setNuevo] = React.useState({})
   const [action,setAction] = React.useState("Nuevo")
-  const [departamento,setDepart] = React.useState([])
   
   const [form] = Form.useForm();
   
@@ -39,19 +35,8 @@ export default function DataTable() {
   const [status,setStatus] = React.useState('')
 
   const columns = [
-    { dataIndex: 'name', key: 'name', title: 'Servicio' },
-    { dataIndex: 'description', key: 'description', title: 'Descripción'},
+    { dataIndex: 'name', key: 'name', title: 'Nombre' },
     {
-      key:'departamento', title:'Departamento',
-      render: (item)=>{
-          return (
-            <Space>
-                {item.departamento.name}
-            </Space>
-          )
-        }
-      },
-      {
       key:'actions', title:'...',
       render: (item)=>{
         return (
@@ -91,21 +76,21 @@ export default function DataTable() {
   const submitForm = async (values) =>{
     setStatus('loading');
     if(action=='Nuevo'){
-      const uri = "/service";
+      const uri = "/department";
       api_contratacion.post(uri,values).then(res=>{
         loadData();
         setStatus('recived');
-        message.success('Servicio Insertado correctamente')
+        message.success('Departamento Insertado correctamente')
         handleClose();
       }).catch(err=>{
         message.error(err.message)
       })
     }else{
-      const uri = `/service/${id}`;
+      const uri = `/department/${id}`;
       api_contratacion.put(uri,values).then(res=>{
         loadData();
         setStatus('recived');
-        message.success('Servicio actualizado correctamente')
+        message.success('Departamento actualizado correctamente')
         handleClose();
       }).catch(err=>{
         message.error(err.message)
@@ -120,15 +105,9 @@ export default function DataTable() {
   };
 
   const loadData = ()=>{
-    api_contratacion.get('/service').then(res=>{
+    api_contratacion.get('/department').then(res=>{
       const d = res.data.data; 
       setData(d.map((it)=>{return {...it,key:it._id}}))
-    })
-    setStatus('loading');
-    api_contratacion.get('/department').then(res=>{
-      setStatus('loading');
-      setDepart(res.data.data)
-      setStatus('recived')
     })
   }
 
@@ -145,7 +124,7 @@ export default function DataTable() {
          <div style={{display:'flex', justifyContent:'space-between'}}>
             <Typography.Title level={5} style={{ margin: 0 }}>
               <ContainerOutlined style={{marginRight:10}}/>
-              Servicios
+              Departamentos
             </Typography.Title>
           <Button onClick={nuevoOpen} type='primary' style={{ background: "#007a3d", borderColor:"#007a3d" }}>Nuevo</Button>
          </div>
@@ -186,31 +165,11 @@ export default function DataTable() {
               autoComplete="on"
             >
               <Form.Item
-                label="Servicio"
+                label="Departamento"
                 name="name"
                 rules={[{ required: true, message: 'Debe insertar el servicio!' }]}
               >
                 <Input />
-              </Form.Item>
-
-              <Form.Item
-                label="Descripción"
-                name="description"
-                rules={[{ required: true, message: 'Debe insertar la descripción!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                label="Departamento"
-                name="departamento"
-                rules={[{ required: true, message: 'Debe escoger el departamento!' }]}
-              >
-
-                <Select placeholder="Escoja una opción" loading={loading()} disabled={loading()}>
-                  {departamento.map(item=>
-                    <Option key={item._id} value={item._id}>{item.name}</Option>
-                  )}
-                </Select>
               </Form.Item>
             </Form>
         </Modal>

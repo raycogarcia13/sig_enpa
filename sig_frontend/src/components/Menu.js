@@ -40,6 +40,10 @@ export default (props)=>{
                     <Link to="/clients" />
                     Clientes
                 </Menu.Item>
+                <Menu.Item key="nom_dpto" icon={<ContainerOutlined />} >
+                    <Link to="/departamentos" />
+                    Departamentos
+                </Menu.Item>
             </SubMenu>
         </Menu>
     )
